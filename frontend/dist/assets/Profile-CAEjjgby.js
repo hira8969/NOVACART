@@ -1,0 +1,16 @@
+import{c as t,d as c,j as e}from"./index-Cnja-2BS.js";import{P as i}from"./Page-CLokOiRl.js";/**
+ * @license lucide-react v0.468.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const n=t("PackageCheck",[["path",{d:"m16 16 2 2 4-4",key:"gfu2re"}],["path",{d:"M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14",key:"e7tb2h"}],["path",{d:"m7.5 4.27 9 5.15",key:"1c824w"}],["polyline",{points:"3.29 7 12 12 20.71 7",key:"ousv84"}],["line",{x1:"12",x2:"12",y1:"22",y2:"12",key:"a4e8g8"}]]);/**
+ * @license lucide-react v0.468.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const r=t("Settings",[["path",{d:"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",key:"1qme2f"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]]);/**
+ * @license lucide-react v0.468.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const d=t("Shield",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}]]);function x(){const a=c(s=>s.auth.user);return e.jsx(i,{className:"px-4 pb-20 pt-32",children:e.jsxs("div",{className:"mx-auto max-w-6xl",children:[e.jsx("div",{className:"rounded-[2.5rem] bg-slate-950 p-8 text-white shadow-premium md:p-10",children:e.jsxs("div",{className:"flex flex-col gap-6 sm:flex-row sm:items-center",children:[e.jsx("img",{src:a==null?void 0:a.avatar,alt:a==null?void 0:a.name,className:"h-28 w-28 rounded-full object-cover ring-4 ring-cyan-300/40"}),e.jsxs("div",{children:[e.jsx("p",{className:"text-sm font-black uppercase tracking-[0.24em] text-cyan-300",children:"Profile"}),e.jsx("h1",{className:"mt-2 text-4xl font-black",children:a==null?void 0:a.name}),e.jsxs("p",{className:"mt-2 text-slate-300",children:[a==null?void 0:a.email," · ",a==null?void 0:a.role]})]})]})}),e.jsx("div",{className:"mt-8 grid gap-5 md:grid-cols-3",children:[n,d,r].map((s,l)=>e.jsxs("div",{className:"rounded-[2rem] bg-white p-6 shadow-lg dark:bg-white/[0.06]",children:[e.jsx(s,{className:"text-cyan-500"}),e.jsx("p",{className:"mt-4 text-xl font-black",children:["Order history","Security","Preferences"][l]}),e.jsx("p",{className:"mt-2 text-sm leading-6 text-slate-500 dark:text-slate-300",children:["Track shipments, returns, and invoices.","Password, sessions, and verification.","Theme, address, and notification settings."][l]})]},l))})]})})}export{x as default};
