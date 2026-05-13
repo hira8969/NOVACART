@@ -1,16 +1,60 @@
 import { Search, SlidersHorizontal } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Page from '../components/ui/Page';
 import ProductCard from '../components/ProductCard';
 import SkeletonGrid from '../components/ui/SkeletonGrid';
-import { categories, products } from '../data/products';
+import api from '../api/client';
+import { categories as demoCategories, products as demoProducts } from '../data/products';
+import { normalizeProducts } from '../utils/productAdapter';
 
 export default function Shop() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState('featured');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(demoCategories);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const collection = searchParams.get('collection');
   const categoryNames = ['All', ...categories.map((item) => item.name)];
+
+  useEffect(() => {
+    const sortParam = searchParams.get('sort');
+    if (sortParam && ['featured', 'low', 'high', 'rating'].includes(sortParam)) {
+      setSort(sortParam);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProducts() {
+      setLoading(true);
+      try {
+        const [productsResponse, categoriesResponse] = await Promise.all([
+          api.get('/products'),
+          api.get('/products/categories')
+        ]);
+
+        if (!mounted) return;
+        const apiProducts = normalizeProducts(productsResponse.products);
+        setProducts(apiProducts.length ? apiProducts : demoProducts);
+        setCategories(categoriesResponse.categories?.length ? categoriesResponse.categories : demoCategories);
+      } catch {
+        if (!mounted) return;
+        setProducts(demoProducts);
+        setCategories(demoCategories);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    loadProducts();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     let list = products.filter((product) => {
@@ -18,16 +62,20 @@ export default function Shop() {
       const matchQuery = product.name.toLowerCase().includes(query.toLowerCase()) || product.description.toLowerCase().includes(query.toLowerCase());
       return matchCategory && matchQuery;
     });
+    if (collection === 'new') list = list.filter((product) => ['New', 'Featured', 'Active'].includes(product.badge));
+    if (collection === 'sale') list = list.filter((product) => product.oldPrice > product.price);
     if (sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
     if (sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
     if (sort === 'rating') list = [...list].sort((a, b) => b.rating - a.rating);
     return list;
-  }, [category, query, sort]);
+  }, [category, collection, products, query, sort]);
 
   const refresh = (nextCategory) => {
-    setLoading(true);
     setCategory(nextCategory);
-    window.setTimeout(() => setLoading(false), 450);
+    setSearchParams((current) => {
+      current.delete('collection');
+      return current;
+    });
   };
 
   return (

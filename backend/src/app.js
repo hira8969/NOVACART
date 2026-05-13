@@ -13,6 +13,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

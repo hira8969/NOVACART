@@ -18,6 +18,7 @@ const Orders = lazy(() => import('./pages/Orders'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const InfoPage = lazy(() => import('./pages/InfoPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
@@ -41,6 +42,12 @@ export default function App() {
               <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/gift-cards" element={<InfoPage />} />
+              <Route path="/careers" element={<InfoPage />} />
+              <Route path="/press" element={<InfoPage />} />
+              <Route path="/help-center" element={<InfoPage />} />
+              <Route path="/returns" element={<InfoPage />} />
+              <Route path="/privacy" element={<InfoPage />} />
               <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
               <Route path="*" element={<NotFound />} />
             </Route>

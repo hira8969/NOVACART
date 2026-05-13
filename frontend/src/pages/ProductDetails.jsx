@@ -1,22 +1,54 @@
 import { Heart, Minus, Plus, ShieldCheck, Star, Truck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Page from '../components/ui/Page';
 import Button from '../components/ui/Button';
 import ProductCard from '../components/ProductCard';
+import api from '../api/client';
 import { addToCart } from '../features/cartSlice';
 import { toggleWishlist } from '../features/wishlistSlice';
 import { products } from '../data/products';
+import { normalizeProduct, normalizeProducts } from '../utils/productAdapter';
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const product = products.find((item) => item.id === id) || products[0];
-  const [image, setImage] = useState(product.gallery[0]);
+  const fallbackProduct = products.find((item) => item.id === id) || products[0];
+  const [product, setProduct] = useState(fallbackProduct);
+  const [allProducts, setAllProducts] = useState(products);
+  const [image, setImage] = useState(fallbackProduct.gallery[0]);
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
-  const related = products.filter((item) => item.category === product.category && item.id !== product.id).slice(0, 3);
+  const related = allProducts.filter((item) => item.category === product.category && item.id !== product.id).slice(0, 3);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProduct() {
+      try {
+        const [productResponse, productsResponse] = await Promise.all([
+          api.get(`/products/${id}`),
+          api.get('/products')
+        ]);
+        if (!mounted) return;
+        const nextProduct = normalizeProduct(productResponse.product);
+        setProduct(nextProduct);
+        setImage(nextProduct.gallery[0]);
+        setAllProducts(normalizeProducts(productsResponse.products));
+      } catch {
+        if (!mounted) return;
+        setProduct(fallbackProduct);
+        setImage(fallbackProduct.gallery[0]);
+        setAllProducts(products);
+      }
+    }
+
+    loadProduct();
+    return () => {
+      mounted = false;
+    };
+  }, [fallbackProduct, id]);
 
   const buy = () => {
     dispatch(addToCart({ ...product, quantity }));

@@ -1,9 +1,12 @@
 import { Boxes, DollarSign, ShoppingCart, Users } from 'lucide-react';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useEffect, useState } from 'react';
 import Page from '../components/ui/Page';
+import api from '../api/client';
 import { products } from '../data/products';
+import { normalizeProducts } from '../utils/productAdapter';
 
-const revenue = [
+const demoRevenue = [
   { month: 'Jan', value: 24000, orders: 310 },
   { month: 'Feb', value: 31000, orders: 390 },
   { month: 'Mar', value: 42000, orders: 520 },
@@ -12,14 +15,50 @@ const revenue = [
   { month: 'Jun', value: 74000, orders: 820 }
 ];
 
-const segments = [
+const demoSegments = [
   { name: 'Tech', value: 42, color: '#06b6d4' },
   { name: 'Style', value: 28, color: '#ec4899' },
   { name: 'Wellness', value: 18, color: '#8b5cf6' },
   { name: 'Studio', value: 12, color: '#22c55e' }
 ];
 
+const segmentColors = ['#06b6d4', '#ec4899', '#8b5cf6', '#22c55e', '#f59e0b', '#64748b'];
+
+const formatMoney = (value) => `$${Number(value || 0).toLocaleString()}`;
+
 export default function AdminDashboard() {
+  const [dashboard, setDashboard] = useState({
+    cards: { revenue: 284000, orders: 4890, users: 24800, stockHealth: 91 },
+    revenue: demoRevenue,
+    segments: demoSegments,
+    inventory: products
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadDashboard() {
+      try {
+        const response = await api.get('/dashboard/overview');
+        if (!mounted || !response.overview) return;
+        const segments = response.overview.segments?.length
+          ? response.overview.segments.map((item, index) => ({ ...item, color: segmentColors[index % segmentColors.length] }))
+          : demoSegments;
+        const inventory = response.overview.inventory?.length ? normalizeProducts(response.overview.inventory) : products;
+        setDashboard({ ...response.overview, segments, inventory });
+      } catch {
+        if (mounted) setDashboard((current) => current);
+      }
+    }
+
+    loadDashboard();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const { cards, revenue, segments, inventory } = dashboard;
+
   return (
     <Page className="px-4 pb-20 pt-32">
       <div className="mx-auto max-w-7xl">
@@ -28,11 +67,11 @@ export default function AdminDashboard() {
           <button className="rounded-full bg-slate-950 px-5 py-3 font-black text-white dark:bg-white dark:text-slate-950">Export report</button>
         </div>
         <div className="grid gap-5 md:grid-cols-4">
-          {[
-            [DollarSign, '$284K', 'Revenue', 'from-indigo-600 to-cyan-500'],
-            [ShoppingCart, '4,890', 'Orders', 'from-fuchsia-600 to-pink-500'],
-            [Users, '24.8K', 'Users', 'from-emerald-500 to-cyan-500'],
-            [Boxes, '91%', 'Stock health', 'from-violet-600 to-indigo-500']
+          {[ 
+            [DollarSign, formatMoney(cards.revenue), 'Revenue', 'from-indigo-600 to-cyan-500'],
+            [ShoppingCart, Number(cards.orders || 0).toLocaleString(), 'Orders', 'from-fuchsia-600 to-pink-500'],
+            [Users, Number(cards.users || 0).toLocaleString(), 'Users', 'from-emerald-500 to-cyan-500'],
+            [Boxes, `${cards.stockHealth || 0}%`, 'Stock health', 'from-violet-600 to-indigo-500']
           ].map(([Icon, value, label, color]) => (
             <div key={label} className={`rounded-[2rem] bg-gradient-to-br ${color} p-6 text-white shadow-premium`}>
               <Icon /><p className="mt-6 text-3xl font-black">{value}</p><p className="text-sm text-white/75">{label}</p>
@@ -75,7 +114,7 @@ export default function AdminDashboard() {
               <table className="w-full min-w-[620px] text-left text-sm">
                 <thead className="text-slate-500"><tr><th className="py-3">Product</th><th>Stock</th><th>Rating</th><th>Revenue</th><th>Status</th></tr></thead>
                 <tbody>
-                  {products.map((product) => <tr key={product.id} className="border-t border-slate-100 dark:border-white/10"><td className="py-3 font-bold">{product.name}</td><td>{product.stock}</td><td>{product.rating}</td><td>${(product.price * product.stock).toLocaleString()}</td><td><span className="rounded-full bg-emerald-100 px-3 py-1 font-black text-emerald-700">Active</span></td></tr>)}
+                  {inventory.map((product) => <tr key={product.id} className="border-t border-slate-100 dark:border-white/10"><td className="py-3 font-bold">{product.name}</td><td>{product.stock}</td><td>{product.rating}</td><td>${(product.price * product.stock).toLocaleString()}</td><td><span className="rounded-full bg-emerald-100 px-3 py-1 font-black text-emerald-700">Active</span></td></tr>)}
                 </tbody>
               </table>
             </div>

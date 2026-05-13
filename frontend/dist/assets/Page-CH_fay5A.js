@@ -1,0 +1,1 @@
+import{j as i,m as e}from"./index-BEloCzR6.js";function o({children:t,className:a=""}){return i.jsx(e.main,{initial:{opacity:0,y:14},animate:{opacity:1,y:0},exit:{opacity:0,y:-14},transition:{duration:.35,ease:"easeOut"},className:`min-h-screen bg-cloud text-ink dark:bg-[#050814] dark:text-white ${a}`,children:t})}export{o as P};
